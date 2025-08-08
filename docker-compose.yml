@@ -1,0 +1,24 @@
+# Servicios (contenedores) que queremos correr
+services:
+  # Servicio de base de datos "db"
+  db:
+    # Usamos la imagen oficial de PostgresSQL, version 15
+    # la etiqueta "alpine" es para emplear una version ligera de Linux
+    image: postgres:15-alpine
+    # Nombramos al contenedor para poder identificarlo
+    container_name: quantum-wallet-db
+    # "always" empleamos este parametro para que si el contenedor se detiene por alguna razo, Docker intente levantarlo nuevamente
+    restart: always
+    # Definimos las variables de entorno para la configuracion de la base de datos
+    environment:
+      - POSTGRES_USER=quantum_user
+      - POSTGRES_PASSWORD=QuantumPassword
+      - POSTGRES_DB=quantum_wallet_db
+    # Asignamos un puerto del host fisico con un puerto del contenedor
+    # Esto permite tener conexion entre nuestra maquina en localhost:5432
+    ports:
+      - "5432:5432"
+    # Creamos un volumen "persistente" usando un Bind Mount.
+    # Conectamos la carpeta ./pgdata de nuestro proyecto con el directorio de datos del contenedor.
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
